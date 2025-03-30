@@ -1,83 +1,118 @@
-# Open Source RAG with LangChain
+# Open Source RAG Pipeline
 
-This project demonstrates a Retrieval Augmented Generation (RAG) system using LangChain to process and query PDF documents. The example uses Richard Feynman's lectures on physics to showcase how to build a question-answering system that can provide accurate responses based on document content.
+A flexible and interactive RAG (Retrieval Augmented Generation) pipeline that allows you to ask questions about PDF documents using various LLM models.
 
 ## Features
 
-- PDF document processing using LangChain's PyPDFLoader
-- Vector storage using DocArrayInMemorySearch
-- Embeddings generation using Ollama
-- Question-answering chain using LangChain's components
-- Support for streaming responses
-- Batch processing capabilities
+- Support for multiple LLM models:
+  - GPT-4 (OpenAI)
+  - Claude 3 Sonnet (Anthropic)
+  - Llama2 (via Ollama)
+  - Llama3 (via Ollama)
+- Interactive question-answering mode
+- Single question mode
+- Efficient document processing with vector embeddings
+- OpenAI embeddings for GPT and Claude models
+- Ollama embeddings for Llama models
 
 ## Prerequisites
 
-- Python 3.12+
-- [uv](https://github.com/astral-sh/uv) package manager
-- Ollama installed and running locally
+- Python 3.8 or higher
+- OpenAI API key (for GPT model and embeddings)
+- Anthropic API key (for Claude model)
+- Ollama installed locally (for Llama models)
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone <repository-url>
 cd opensource-rag
 ```
 
 2. Create and activate a virtual environment:
 ```bash
-uv venv
-source .venv/bin/activate  # On Unix/macOS
-# or
-.venv\Scripts\activate  # On Windows
+python -m venv .venv
+source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
 ```
 
 3. Install dependencies:
 ```bash
-uv pip install -r requirements.txt
+pip install -r requirements.txt
+```
+
+4. Create a `.env` file in the project root with your API keys:
+```env
+OPENAI_API_KEY=your_openai_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
+
+5. For Llama models, make sure Ollama is installed and running locally with the required models:
+```bash
+ollama pull llama2
+ollama pull llama3
 ```
 
 ## Usage
 
-1. Place your PDF documents in the project directory.
+The script can be used in two modes:
 
-2. Run the Jupyter notebook:
+### Interactive Mode
+
+Run the script in interactive mode to ask multiple questions about a PDF:
+
 ```bash
-jupyter notebook notebook.ipynb
+python main.py path/to/your.pdf gpt --interactive
 ```
 
-3. Follow the notebook cells to:
-   - Load and process your PDF documents
-   - Create embeddings and vector store
-   - Set up the question-answering chain
-   - Query your documents
+In interactive mode:
+- Type your questions and press Enter
+- Type 'quit', 'exit', or 'q' to end the session
+- Press Ctrl+C to exit at any time
+- Empty questions are ignored
 
-## Project Structure
+### Single Question Mode
 
-- `notebook.ipynb`: Main Jupyter notebook containing the RAG implementation
-- `requirements.txt`: Project dependencies
-- `feynman.pdf`: Example PDF document (Feynman's lectures)
+Ask a single question about a PDF:
 
-## Dependencies
-
-- langchain
-- langchain-openai
-- langchain-ollama
-- langchain-community
-- docarray
-- pydantic
-- python-dotenv
-- jupyter
-
-## Environment Variables
-
-Create a `.env` file in the project root with the following variables:
-
+```bash
+python main.py path/to/your.pdf gpt --question "What is this document about?"
 ```
-OPENAI_API_KEY=your_openai_api_key
-ANTHROPIC_API_KEY=your_anthropic_api_key
+
+### Available Models
+
+- `gpt`: GPT-4 (requires OpenAI API key)
+- `claude`: Claude 3 Sonnet (requires Anthropic API key)
+- `llama2`: Llama2 (requires Ollama)
+- `llama3`: Llama3 (requires Ollama)
+
+### Command Line Arguments
+
+- `pdf_path`: Path to the PDF file to analyze (required)
+- `model`: Model to use for answering questions (required, choices: gpt, claude, llama2, llama3)
+- `--interactive`, `-i`: Run in interactive mode
+- `--question`, `-q`: Single question to ask about the PDF (ignored in interactive mode)
+
+## Example
+
+```bash
+# Interactive mode with GPT-4
+python main.py documents/research.pdf gpt --interactive
+
+# Single question with Claude
+python main.py documents/research.pdf claude --question "What are the key findings?"
+
+# Single question with Llama2
+python main.py documents/research.pdf llama2 --question "Summarize the main points"
 ```
+
+## Notes
+
+- The script uses OpenAI embeddings for both GPT and Claude models for optimal performance
+- Ollama embeddings are used for Llama models
+- The vector store is kept in memory during interactive sessions for faster subsequent questions
+- Make sure your PDF files are readable and not corrupted
+- Large PDFs may take longer to process initially
 
 ## License
 
